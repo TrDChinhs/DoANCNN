@@ -1,0 +1,951 @@
+USE [master]
+GO
+/****** Object:  Database [QuanLyNongTrai]    Script Date: 23/04/2025 1:54:22 CH ******/
+CREATE DATABASE [QuanLyNongTrai]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'QuanLyNongTrai', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\QuanLyNongTrai.mdf' , SIZE = 81920KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'QuanLyNongTrai_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\QuanLyNongTrai_log.ldf' , SIZE = 81920KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+ WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+GO
+ALTER DATABASE [QuanLyNongTrai] SET COMPATIBILITY_LEVEL = 160
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [QuanLyNongTrai].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [QuanLyNongTrai] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET ANSI_NULLS ON 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET RECOVERY FULL 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET  MULTI_USER 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [QuanLyNongTrai] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [QuanLyNongTrai] SET ACCELERATED_DATABASE_RECOVERY = OFF  
+GO
+EXEC sys.sp_db_vardecimal_storage_format N'QuanLyNongTrai', N'ON'
+GO
+ALTER DATABASE [QuanLyNongTrai] SET QUERY_STORE = ON
+GO
+ALTER DATABASE [QuanLyNongTrai] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
+GO
+USE [QuanLyNongTrai]
+GO
+/****** Object:  User [app_nongtrai]    Script Date: 23/04/2025 1:54:22 CH ******/
+CREATE USER [app_nongtrai] FOR LOGIN [app_nongtrai] WITH DEFAULT_SCHEMA=[dbo]
+GO
+/****** Object:  Table [dbo].[ChiPhi]    Script Date: 23/04/2025 1:54:22 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[ChiPhi](
+	[CP_ID] [int] IDENTITY(1,1) NOT NULL,
+	[MV_IDMuaVu] [char](4) NOT NULL,
+	[CP_NgayChiPhi] [date] NOT NULL,
+	[CP_LoaiChiPhi] [nvarchar](50) NOT NULL,
+	[CP_MoTa] [nvarchar](255) NULL,
+	[CP_SoLuong] [decimal](10, 2) NULL,
+	[CP_DonViTinh] [nvarchar](20) NULL,
+	[CP_DonGia] [decimal](12, 2) NULL,
+	[CP_ThanhTien] [decimal](14, 2) NOT NULL,
+	[QLHG_IDHatGiong] [char](4) NULL,
+	[QLPB_IDPhanBon] [char](4) NULL,
+	[QLVT_IDVatTu] [char](4) NULL,
+	[QLNC_IDNhanCong] [char](4) NULL,
+ CONSTRAINT [PK_ChiPhi] PRIMARY KEY CLUSTERED 
+(
+	[CP_ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[DuBaoThoiTiet]    Script Date: 23/04/2025 1:54:23 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[DuBaoThoiTiet](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[NgayGio] [datetime] NOT NULL,
+	[NhietDo] [int] NULL,
+	[TrangThai] [nvarchar](100) NULL,
+	[IconKey] [nvarchar](150) NULL,
+	[LuongMua] [float] NULL,
+	[DoAm] [tinyint] NULL,
+	[TocDoGio] [float] NULL,
+	[HuongGio] [nvarchar](50) NULL,
+	[XacSuatMua] [tinyint] NULL,
+ CONSTRAINT [PK_DuBaoThoiTiet] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[QLChuRuong]    Script Date: 23/04/2025 1:54:23 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[QLChuRuong](
+	[CR_IDChuRuong] [char](4) NOT NULL,
+	[CR_HoTen] [nvarchar](50) NOT NULL,
+	[CR_NgaySinh] [date] NULL,
+	[CR_GioiTinh] [nvarchar](5) NULL,
+	[CR_DiaChi] [nvarchar](255) NULL,
+	[CR_CMND] [varchar](20) NULL,
+	[CR_TenTaiKhoan] [nvarchar](50) NULL,
+ CONSTRAINT [PK_ChuRuong] PRIMARY KEY CLUSTERED 
+(
+	[CR_IDChuRuong] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[QLHatGiong]    Script Date: 23/04/2025 1:54:23 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[QLHatGiong](
+	[QLHG_IDHatGiong] [char](4) NOT NULL,
+	[QLHG_TenHatGiong] [nvarchar](100) NOT NULL,
+	[QLHG_GiaHatGiong] [decimal](12, 3) NULL,
+	[QLHG_SoLuongTonKho] [int] NULL,
+	[QLHG_DonViTinh] [nvarchar](20) NULL,
+	[QLHG_NhaCungCap] [nvarchar](100) NULL,
+ CONSTRAINT [PK_QuanLyHatGiong] PRIMARY KEY CLUSTERED 
+(
+	[QLHG_IDHatGiong] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[QLMuaVu]    Script Date: 23/04/2025 1:54:23 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[QLMuaVu](
+	[MV_IDMuaVu] [char](4) NOT NULL,
+	[MV_TenMuaVu] [nvarchar](100) NULL,
+	[MV_ThoiGianGieo] [date] NULL,
+	[MV_ThoiGianThuHoachDuKien] [date] NULL,
+	[MV_ThoiGianThuHoachThucTe] [date] NULL,
+	[R_IDRuong] [char](4) NOT NULL,
+	[MV_TenCayTrong] [nvarchar](50) NOT NULL,
+	[MV_TrangThai] [nvarchar](50) NULL,
+	[MV_SanLuongDuKien] [decimal](10, 2) NULL,
+	[MV_SanLuongThucTe] [decimal](10, 2) NULL,
+	[MV_DonViSanLuong] [nvarchar](20) NULL,
+ CONSTRAINT [PK_QLMuaVu] PRIMARY KEY CLUSTERED 
+(
+	[MV_IDMuaVu] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[QLNhanCong]    Script Date: 23/04/2025 1:54:23 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[QLNhanCong](
+	[QLNC_IDNhanCong] [char](4) NOT NULL,
+	[QLNC_TenNhanCong] [nvarchar](50) NOT NULL,
+	[QLNC_SoDienThoai] [varchar](15) NULL,
+	[QLNC_CMND] [varchar](20) NULL,
+	[QLNC_DiaChi] [nvarchar](255) NULL,
+	[QLNC_NgaySinh] [date] NULL,
+	[QLNC_NgayVaoLam] [date] NULL,
+	[QLNC_Luong] [decimal](12, 3) NULL,
+	[QLNC_DonViLuong] [nvarchar](10) NULL,
+	[QLNC_TrangThai] [nvarchar](50) NULL,
+ CONSTRAINT [PK_QuanLyNhanCong] PRIMARY KEY CLUSTERED 
+(
+	[QLNC_IDNhanCong] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[QLPhanBon]    Script Date: 23/04/2025 1:54:23 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[QLPhanBon](
+	[QLPB_IDPhanBon] [char](4) NOT NULL,
+	[QLPB_TenPhanBon] [nvarchar](100) NOT NULL,
+	[QLPB_SoLuongTonKho] [int] NULL,
+	[QLPB_DonViTinh] [nvarchar](20) NULL,
+	[QLPB_Gia] [decimal](12, 2) NULL,
+	[QLPB_LoaiPhanBon] [nvarchar](50) NULL,
+	[QLPB_NhaCungCap] [nvarchar](100) NULL,
+ CONSTRAINT [PK_QuanLyPhanBon] PRIMARY KEY CLUSTERED 
+(
+	[QLPB_IDPhanBon] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[QLRuong]    Script Date: 23/04/2025 1:54:23 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[QLRuong](
+	[R_IDRuong] [char](4) NOT NULL,
+	[CR_IDChuRuong] [char](4) NULL,
+	[R_DienTich] [decimal](10, 3) NULL,
+	[R_ViTri] [nvarchar](255) NULL,
+	[R_LoaiDat] [nvarchar](50) NULL,
+ CONSTRAINT [PK_QLRuong] PRIMARY KEY CLUSTERED 
+(
+	[R_IDRuong] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[QLVatTu]    Script Date: 23/04/2025 1:54:23 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[QLVatTu](
+	[QLVT_IDVatTu] [char](4) NOT NULL,
+	[QLVT_TenVatTu] [nvarchar](100) NOT NULL,
+	[QLVT_GiaVatTu] [decimal](12, 3) NULL,
+	[QLVT_SoLuongTonKho] [int] NULL,
+	[QLVT_DonVi] [nvarchar](20) NULL,
+	[QLVT_LoaiVatTu] [nvarchar](50) NULL,
+	[QLVT_NhaCungCap] [nvarchar](100) NULL,
+ CONSTRAINT [PK_QuanLyVatTu] PRIMARY KEY CLUSTERED 
+(
+	[QLVT_IDVatTu] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TaiKhoan]    Script Date: 23/04/2025 1:54:23 CH ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TaiKhoan](
+	[TK_TenTaiKhoan] [nvarchar](50) NOT NULL,
+	[TK_MatKhau] [nvarchar](255) NOT NULL,
+	[TK_Email] [nvarchar](100) NULL,
+	[CR_IDChuRuong] [char](4) NULL,
+ CONSTRAINT [PK_TaiKhoan] PRIMARY KEY CLUSTERED 
+(
+	[TK_TenTaiKhoan] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET IDENTITY_INSERT [dbo].[ChiPhi] ON 
+GO
+INSERT [dbo].[ChiPhi] ([CP_ID], [MV_IDMuaVu], [CP_NgayChiPhi], [CP_LoaiChiPhi], [CP_MoTa], [CP_SoLuong], [CP_DonViTinh], [CP_DonGia], [CP_ThanhTien], [QLHG_IDHatGiong], [QLPB_IDPhanBon], [QLVT_IDVatTu], [QLNC_IDNhanCong]) VALUES (1, N'MV01', CAST(N'2024-11-18' AS Date), N'Hạt giống', N'Mua giống lúa OM5451 cho 1.5ha', CAST(120.00 AS Decimal(10, 2)), N'kg', CAST(15000.00 AS Decimal(12, 2)), CAST(1800000.00 AS Decimal(14, 2)), N'HG01', NULL, NULL, NULL)
+GO
+INSERT [dbo].[ChiPhi] ([CP_ID], [MV_IDMuaVu], [CP_NgayChiPhi], [CP_LoaiChiPhi], [CP_MoTa], [CP_SoLuong], [CP_DonViTinh], [CP_DonGia], [CP_ThanhTien], [QLHG_IDHatGiong], [QLPB_IDPhanBon], [QLVT_IDVatTu], [QLNC_IDNhanCong]) VALUES (2, N'MV01', CAST(N'2024-11-25' AS Date), N'Nhân công', N'Thuê 3 công làm đất', CAST(3.00 AS Decimal(10, 2)), N'Ngày công', CAST(250000.00 AS Decimal(12, 2)), CAST(750000.00 AS Decimal(14, 2)), NULL, NULL, NULL, N'NC01')
+GO
+INSERT [dbo].[ChiPhi] ([CP_ID], [MV_IDMuaVu], [CP_NgayChiPhi], [CP_LoaiChiPhi], [CP_MoTa], [CP_SoLuong], [CP_DonViTinh], [CP_DonGia], [CP_ThanhTien], [QLHG_IDHatGiong], [QLPB_IDPhanBon], [QLVT_IDVatTu], [QLNC_IDNhanCong]) VALUES (3, N'MV01', CAST(N'2024-12-15' AS Date), N'Phân bón', N'Bón lót Super Lân', CAST(150.00 AS Decimal(10, 2)), N'kg', CAST(5500.00 AS Decimal(12, 2)), CAST(825000.00 AS Decimal(14, 2)), NULL, N'PB02', NULL, NULL)
+GO
+INSERT [dbo].[ChiPhi] ([CP_ID], [MV_IDMuaVu], [CP_NgayChiPhi], [CP_LoaiChiPhi], [CP_MoTa], [CP_SoLuong], [CP_DonViTinh], [CP_DonGia], [CP_ThanhTien], [QLHG_IDHatGiong], [QLPB_IDPhanBon], [QLVT_IDVatTu], [QLNC_IDNhanCong]) VALUES (4, N'MV02', CAST(N'2025-04-10' AS Date), N'Hạt giống', N'Mua giống Đài Thơm 8 cho 2.1ha', CAST(150.00 AS Decimal(10, 2)), N'kg', CAST(16500.00 AS Decimal(12, 2)), CAST(2475000.00 AS Decimal(14, 2)), N'HG02', NULL, NULL, NULL)
+GO
+INSERT [dbo].[ChiPhi] ([CP_ID], [MV_IDMuaVu], [CP_NgayChiPhi], [CP_LoaiChiPhi], [CP_MoTa], [CP_SoLuong], [CP_DonViTinh], [CP_DonGia], [CP_ThanhTien], [QLHG_IDHatGiong], [QLPB_IDPhanBon], [QLVT_IDVatTu], [QLNC_IDNhanCong]) VALUES (5, N'MV02', CAST(N'2025-04-20' AS Date), N'Vật tư', N'Mua thuốc trừ cỏ Gramoxone', CAST(2.00 AS Decimal(10, 2)), N'Chai (1L)', CAST(120000.00 AS Decimal(12, 2)), CAST(240000.00 AS Decimal(14, 2)), NULL, NULL, N'VT02', NULL)
+GO
+INSERT [dbo].[ChiPhi] ([CP_ID], [MV_IDMuaVu], [CP_NgayChiPhi], [CP_LoaiChiPhi], [CP_MoTa], [CP_SoLuong], [CP_DonViTinh], [CP_DonGia], [CP_ThanhTien], [QLHG_IDHatGiong], [QLPB_IDPhanBon], [QLVT_IDVatTu], [QLNC_IDNhanCong]) VALUES (6, N'MV03', CAST(N'2025-02-08' AS Date), N'Hạt giống', N'Mua giống ngô NK7328 cho 3ha', CAST(60.00 AS Decimal(10, 2)), N'kg', CAST(95000.00 AS Decimal(12, 2)), CAST(5700000.00 AS Decimal(14, 2)), N'HG03', NULL, NULL, NULL)
+GO
+INSERT [dbo].[ChiPhi] ([CP_ID], [MV_IDMuaVu], [CP_NgayChiPhi], [CP_LoaiChiPhi], [CP_MoTa], [CP_SoLuong], [CP_DonViTinh], [CP_DonGia], [CP_ThanhTien], [QLHG_IDHatGiong], [QLPB_IDPhanBon], [QLVT_IDVatTu], [QLNC_IDNhanCong]) VALUES (7, N'MV03', CAST(N'2025-03-05' AS Date), N'Phân bón', N'Bón thúc NPK Đầu Trâu', CAST(500.00 AS Decimal(10, 2)), N'kg', CAST(14500.00 AS Decimal(12, 2)), CAST(7250000.00 AS Decimal(14, 2)), NULL, N'PB03', NULL, NULL)
+GO
+INSERT [dbo].[ChiPhi] ([CP_ID], [MV_IDMuaVu], [CP_NgayChiPhi], [CP_LoaiChiPhi], [CP_MoTa], [CP_SoLuong], [CP_DonViTinh], [CP_DonGia], [CP_ThanhTien], [QLHG_IDHatGiong], [QLPB_IDPhanBon], [QLVT_IDVatTu], [QLNC_IDNhanCong]) VALUES (8, N'MV05', CAST(N'2024-03-26' AS Date), N'Nhân công', N'Thuê 5 công thu hoạch', CAST(5.00 AS Decimal(10, 2)), N'Ngày công', CAST(260000.00 AS Decimal(12, 2)), CAST(1300000.00 AS Decimal(14, 2)), NULL, NULL, NULL, NULL)
+GO
+SET IDENTITY_INSERT [dbo].[ChiPhi] OFF
+GO
+SET IDENTITY_INSERT [dbo].[DuBaoThoiTiet] ON 
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (327, CAST(N'2025-04-15T00:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0, 90, 3, N'Đông Nam', 20)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (328, CAST(N'2025-04-15T01:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0, 91, 4, N'Đông Nam', 18)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (329, CAST(N'2025-04-15T02:00:00.000' AS DateTime), 26, N'Nhiều mây', N'may', 0, 91, 4, N'Đông Nam', 17)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (330, CAST(N'2025-04-15T03:00:00.000' AS DateTime), 26, N'Có mây', N'may', 0, 92, 5, N'Đông', 15)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (331, CAST(N'2025-04-15T04:00:00.000' AS DateTime), 26, N'Có mây', N'may', 0, 91, 4, N'Đông', 13)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (332, CAST(N'2025-04-15T05:00:00.000' AS DateTime), 26, N'Có mây', N'may', 0, 89, 8, N'Đông', 12)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (333, CAST(N'2025-04-15T06:00:00.000' AS DateTime), 26, N'Mây thay đổi', N'may', 0, 88, 13, N'Đông', 10)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (334, CAST(N'2025-04-15T07:00:00.000' AS DateTime), 27, N'Mây thay đổi', N'may', 0, 85, 12, N'Đông', 8)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (335, CAST(N'2025-04-15T08:00:00.000' AS DateTime), 28, N'Mây thay đổi', N'may', 0, 83, 12, N'Đông', 7)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (336, CAST(N'2025-04-15T09:00:00.000' AS DateTime), 29, N'Ít mây, hửng nắng', N'nang', 0, 80, 13, N'Đông Nam', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (337, CAST(N'2025-04-15T10:00:00.000' AS DateTime), 30, N'Ít mây, hửng nắng', N'nang', 0, 77, 11, N'Đông Nam', 12)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (338, CAST(N'2025-04-15T11:00:00.000' AS DateTime), 31, N'Ít mây, hửng nắng', N'nang', 0, 73, 11, N'Đông Nam', 18)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (339, CAST(N'2025-04-15T12:00:00.000' AS DateTime), 32, N'Nhiều mây, oi', N'nang', 0, 70, 12, N'Đông Nam', 25)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (340, CAST(N'2025-04-15T13:00:00.000' AS DateTime), 32, N'Nhiều mây, oi', N'nang', 0.1, 70, 12, N'Đông Nam', 27)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (341, CAST(N'2025-04-15T14:00:00.000' AS DateTime), 33, N'Nhiều mây, oi', N'nang', 0.1, 69, 13, N'Đông Nam', 28)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (342, CAST(N'2025-04-15T15:00:00.000' AS DateTime), 33, N'Mây thay đổi', N'may', 0.2, 69, 13, N'Nam', 30)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (343, CAST(N'2025-04-15T16:00:00.000' AS DateTime), 32, N'Mây thay đổi', N'may', 0.2, 72, 12, N'Nam', 28)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (344, CAST(N'2025-04-15T17:00:00.000' AS DateTime), 31, N'Mây thay đổi', N'may', 0.1, 74, 11, N'Nam', 27)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (345, CAST(N'2025-04-15T18:00:00.000' AS DateTime), 30, N'Nhiều mây', N'may', 0.1, 77, 10, N'Nam', 25)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (346, CAST(N'2025-04-15T19:00:00.000' AS DateTime), 29, N'Nhiều mây', N'may', 0.1, 80, 9, N'Nam', 23)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (347, CAST(N'2025-04-15T20:00:00.000' AS DateTime), 29, N'Nhiều mây', N'may', 0, 83, 8, N'Nam', 22)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (348, CAST(N'2025-04-15T21:00:00.000' AS DateTime), 28, N'Nhiều mây', N'may', 0, 86, 6, N'Đông Nam', 20)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (349, CAST(N'2025-04-15T22:00:00.000' AS DateTime), 28, N'Nhiều mây', N'may', 0, 87, 5, N'Đông Nam', 23)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (350, CAST(N'2025-04-15T23:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0.1, 89, 5, N'Đông Nam', 27)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (351, CAST(N'2025-04-16T00:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0.1, 90, 7, N'Đông Nam', 30)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (352, CAST(N'2025-04-16T01:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0.4, 91, 7, N'Đông Nam', 33)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (353, CAST(N'2025-04-16T02:00:00.000' AS DateTime), 26, N'Nhiều mây', N'may', 0.7, 92, 6, N'Đông Nam', 37)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (354, CAST(N'2025-04-16T03:00:00.000' AS DateTime), 26, N'Mưa rào nhẹ', N'mua', 1, 93, 8, N'Đông', 40)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (355, CAST(N'2025-04-16T04:00:00.000' AS DateTime), 26, N'Mưa rào nhẹ', N'mua', 0.8, 93, 8, N'Đông', 43)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (356, CAST(N'2025-04-16T05:00:00.000' AS DateTime), 26, N'Mưa rào nhẹ', N'mua', 0.7, 92, 6, N'Đông', 47)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (357, CAST(N'2025-04-16T06:00:00.000' AS DateTime), 26, N'Có mưa', N'mua', 0.5, 92, 9, N'Đông', 50)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (358, CAST(N'2025-04-16T07:00:00.000' AS DateTime), 27, N'Có mưa', N'mua', 0.3, 90, 9, N'Đông', 43)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (359, CAST(N'2025-04-16T08:00:00.000' AS DateTime), 27, N'Có mưa', N'mua', 0.1, 87, 10, N'Đông', 37)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (360, CAST(N'2025-04-16T09:00:00.000' AS DateTime), 28, N'Mây thay đổi, sau mưa', N'may', 0, 85, 10, N'Đông Bắc', 30)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (361, CAST(N'2025-04-16T10:00:00.000' AS DateTime), 29, N'Mây thay đổi, sau mưa', N'may', 0, 82, 11, N'Đông Bắc', 27)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (362, CAST(N'2025-04-16T11:00:00.000' AS DateTime), 30, N'Mây thay đổi, sau mưa', N'may', 0, 78, 11, N'Đông Bắc', 23)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (363, CAST(N'2025-04-16T12:00:00.000' AS DateTime), 31, N'Có mây', N'may', 0, 75, 12, N'Đông Bắc', 20)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (364, CAST(N'2025-04-16T13:00:00.000' AS DateTime), 31, N'Có mây', N'may', 1.7, 76, 13, N'Đông Bắc', 33)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (365, CAST(N'2025-04-16T14:00:00.000' AS DateTime), 32, N'Có mây', N'may', 3.3, 77, 10, N'Bắc', 47)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (366, CAST(N'2025-04-16T15:00:00.000' AS DateTime), 32, N'Khả năng có dông', N'dong', 5, 78, 8, N'Bắc', 60)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (367, CAST(N'2025-04-16T16:00:00.000' AS DateTime), 31, N'Khả năng có dông', N'dong', 6, 81, 7, N'Bắc', 63)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (368, CAST(N'2025-04-16T17:00:00.000' AS DateTime), 29, N'Khả năng có dông', N'dong', 7, 85, 10, N'Tây Bắc', 67)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (369, CAST(N'2025-04-16T18:00:00.000' AS DateTime), 28, N'Dông', N'dong', 8, 88, 7, N'Tây Bắc', 70)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (370, CAST(N'2025-04-16T19:00:00.000' AS DateTime), 28, N'Dông', N'dong', 6.2, 89, 12, N'Tây Bắc', 63)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (371, CAST(N'2025-04-16T20:00:00.000' AS DateTime), 27, N'Dông', N'dong', 4.3, 90, 12, N'Tây', 57)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (372, CAST(N'2025-04-16T21:00:00.000' AS DateTime), 27, N'Mưa rào', N'mua', 2.5, 91, 10, N'Tây', 50)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (373, CAST(N'2025-04-16T22:00:00.000' AS DateTime), 27, N'Mưa rào', N'mua', 1.7, 91, 9, N'Tây', 48)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (374, CAST(N'2025-04-16T23:00:00.000' AS DateTime), 26, N'Mưa rào', N'mua', 0.9, 90, 8, N'Tây', 46)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (375, CAST(N'2025-04-17T00:00:00.000' AS DateTime), 26, N'Mây thay đổi', N'may', 0, 93, 7, N'Tây', 20)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (376, CAST(N'2025-04-17T01:00:00.000' AS DateTime), 26, N'Mây thay đổi', N'may', 0, 92, 7, N'Tây', 18)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (377, CAST(N'2025-04-17T02:00:00.000' AS DateTime), 25, N'Mây thay đổi', N'may', 0, 91, 6, N'Tây', 17)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (378, CAST(N'2025-04-17T03:00:00.000' AS DateTime), 25, N'Ít mây', N'nang', 0, 90, 6, N'Tây Nam', 15)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (379, CAST(N'2025-04-17T04:00:00.000' AS DateTime), 25, N'Ít mây', N'nang', 0, 89, 6, N'Tây Nam', 13)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (380, CAST(N'2025-04-17T05:00:00.000' AS DateTime), 25, N'Ít mây', N'nang', 0, 87, 7, N'Tây Nam', 12)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (381, CAST(N'2025-04-17T06:00:00.000' AS DateTime), 25, N'Trời quang', N'nang', 0, 86, 7, N'Tây Nam', 10)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (382, CAST(N'2025-04-17T07:00:00.000' AS DateTime), 26, N'Trời quang', N'nang', 0, 82, 8, N'Tây Nam', 8)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (383, CAST(N'2025-04-17T08:00:00.000' AS DateTime), 28, N'Trời quang', N'nang', 0, 79, 9, N'Tây', 7)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (384, CAST(N'2025-04-17T09:00:00.000' AS DateTime), 29, N'Nắng sớm', N'nang', 0, 75, 10, N'Tây', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (385, CAST(N'2025-04-17T10:00:00.000' AS DateTime), 30, N'Nắng sớm', N'nang', 0, 72, 11, N'Tây', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (386, CAST(N'2025-04-17T11:00:00.000' AS DateTime), 32, N'Nắng sớm', N'nang', 0, 68, 12, N'Tây', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (387, CAST(N'2025-04-17T12:00:00.000' AS DateTime), 33, N'Nắng', N'nang', 0, 65, 13, N'Tây', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (388, CAST(N'2025-04-17T13:00:00.000' AS DateTime), 33, N'Nắng', N'nang', 0, 66, 13, N'Tây', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (389, CAST(N'2025-04-17T14:00:00.000' AS DateTime), 32, N'Nắng', N'nang', 0, 67, 12, N'Tây Nam', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (390, CAST(N'2025-04-17T15:00:00.000' AS DateTime), 32, N'Nắng, hơi oi', N'nang', 0, 68, 12, N'Tây Nam', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (391, CAST(N'2025-04-17T16:00:00.000' AS DateTime), 31, N'Nắng, hơi oi', N'nang', 0, 71, 11, N'Tây Nam', 7)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (392, CAST(N'2025-04-17T17:00:00.000' AS DateTime), 30, N'Nắng, hơi oi', N'nang', 0, 75, 10, N'Nam', 8)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (393, CAST(N'2025-04-17T18:00:00.000' AS DateTime), 29, N'Ít mây', N'nang', 0, 78, 9, N'Nam', 10)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (394, CAST(N'2025-04-17T19:00:00.000' AS DateTime), 28, N'Ít mây', N'nang', 0, 80, 8, N'Nam', 8)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (395, CAST(N'2025-04-17T20:00:00.000' AS DateTime), 28, N'Ít mây', N'nang', 0, 83, 8, N'Đông Nam', 7)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (396, CAST(N'2025-04-17T21:00:00.000' AS DateTime), 27, N'Trời trong', N'nang', 0, 85, 7, N'Đông Nam', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (397, CAST(N'2025-04-17T22:00:00.000' AS DateTime), 27, N'Trời trong', N'nang', 0, 86, 7, N'Đông Nam', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (398, CAST(N'2025-04-17T23:00:00.000' AS DateTime), 26, N'Trời trong', N'nang', 0, 87, 6, N'Đông', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (399, CAST(N'2025-04-18T00:00:00.000' AS DateTime), 26, N'Quang đãng', N'nang', 0, 88, 6, N'Đông', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (400, CAST(N'2025-04-18T01:00:00.000' AS DateTime), 26, N'Quang đãng', N'nang', 0, 89, 6, N'Đông', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (401, CAST(N'2025-04-18T02:00:00.000' AS DateTime), 25, N'Quang đãng', N'nang', 0, 90, 5, N'Đông', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (402, CAST(N'2025-04-18T03:00:00.000' AS DateTime), 25, N'Trong xanh, mát', N'nang', 0, 90, 5, N'Đông Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (403, CAST(N'2025-04-18T04:00:00.000' AS DateTime), 25, N'Trong xanh, mát', N'nang', 0, 88, 6, N'Đông Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (404, CAST(N'2025-04-18T05:00:00.000' AS DateTime), 26, N'Trong xanh, mát', N'nang', 0, 87, 6, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (405, CAST(N'2025-04-18T06:00:00.000' AS DateTime), 26, N'Ít mây', N'nang', 0, 85, 7, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (406, CAST(N'2025-04-18T07:00:00.000' AS DateTime), 27, N'Ít mây', N'nang', 0, 81, 8, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (407, CAST(N'2025-04-18T08:00:00.000' AS DateTime), 29, N'Ít mây', N'nang', 0, 76, 10, N'Tây Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (408, CAST(N'2025-04-18T09:00:00.000' AS DateTime), 30, N'Nắng ấm', N'nang', 0, 72, 11, N'Tây Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (409, CAST(N'2025-04-18T10:00:00.000' AS DateTime), 31, N'Nắng ấm', N'nang', 0, 69, 12, N'Tây Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (410, CAST(N'2025-04-18T11:00:00.000' AS DateTime), 33, N'Nắng ấm', N'nang', 0, 65, 13, N'Tây', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (411, CAST(N'2025-04-18T12:00:00.000' AS DateTime), 34, N'Nắng gắt', N'nang', 0, 62, 14, N'Tây', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (412, CAST(N'2025-04-18T13:00:00.000' AS DateTime), 34, N'Nắng gắt', N'nang', 0, 63, 14, N'Tây', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (413, CAST(N'2025-04-18T14:00:00.000' AS DateTime), 33, N'Nắng gắt', N'nang', 0, 64, 13, N'Tây Nam', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (414, CAST(N'2025-04-18T15:00:00.000' AS DateTime), 33, N'Rất nóng', N'nang', 0, 65, 13, N'Tây Nam', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (415, CAST(N'2025-04-18T16:00:00.000' AS DateTime), 32, N'Rất nóng', N'nang', 0, 68, 12, N'Tây Nam', 7)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (416, CAST(N'2025-04-18T17:00:00.000' AS DateTime), 31, N'Rất nóng', N'nang', 0, 72, 11, N'Nam', 8)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (417, CAST(N'2025-04-18T18:00:00.000' AS DateTime), 30, N'Nắng chiều', N'nang', 0, 75, 10, N'Nam', 10)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (418, CAST(N'2025-04-18T19:00:00.000' AS DateTime), 29, N'Nắng chiều', N'nang', 0, 78, 9, N'Nam', 8)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (419, CAST(N'2025-04-18T20:00:00.000' AS DateTime), 29, N'Nắng chiều', N'nang', 0, 81, 9, N'Đông Nam', 7)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (420, CAST(N'2025-04-18T21:00:00.000' AS DateTime), 28, N'Trời quang', N'nang', 0, 83, 8, N'Đông Nam', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (421, CAST(N'2025-04-18T22:00:00.000' AS DateTime), 28, N'Trời quang', N'nang', 0, 85, 8, N'Đông Nam', 8)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (422, CAST(N'2025-04-18T23:00:00.000' AS DateTime), 27, N'Trời quang', N'nang', 0, 86, 7, N'Đông', 12)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (423, CAST(N'2025-04-19T00:00:00.000' AS DateTime), 27, N'Mây thay đổi', N'may', 0, 87, 7, N'Đông', 15)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (424, CAST(N'2025-04-19T01:00:00.000' AS DateTime), 27, N'Mây thay đổi', N'may', 0, 88, 7, N'Đông', 17)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (425, CAST(N'2025-04-19T02:00:00.000' AS DateTime), 26, N'Mây thay đổi', N'may', 0, 89, 6, N'Đông Bắc', 18)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (426, CAST(N'2025-04-19T03:00:00.000' AS DateTime), 26, N'Có mây', N'may', 0, 90, 6, N'Đông Bắc', 20)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (427, CAST(N'2025-04-19T04:00:00.000' AS DateTime), 26, N'Có mây', N'may', 0, 90, 6, N'Đông Bắc', 22)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (428, CAST(N'2025-04-19T05:00:00.000' AS DateTime), 26, N'Có mây', N'may', 0, 89, 7, N'Bắc', 23)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (429, CAST(N'2025-04-19T06:00:00.000' AS DateTime), 26, N'Nhiều mây', N'may', 0, 89, 7, N'Bắc', 25)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (430, CAST(N'2025-04-19T07:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0, 87, 8, N'Bắc', 27)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (431, CAST(N'2025-04-19T08:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0, 84, 9, N'Tây Bắc', 28)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (432, CAST(N'2025-04-19T09:00:00.000' AS DateTime), 28, N'Trời âm u', N'may', 0, 82, 10, N'Tây Bắc', 30)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (433, CAST(N'2025-04-19T10:00:00.000' AS DateTime), 29, N'Trời âm u', N'may', 0, 81, 11, N'Tây Bắc', 32)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (434, CAST(N'2025-04-19T11:00:00.000' AS DateTime), 30, N'Trời âm u', N'may', 0.1, 79, 11, N'Tây', 33)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (435, CAST(N'2025-04-19T12:00:00.000' AS DateTime), 31, N'U ám, không nắng', N'may', 0.1, 78, 12, N'Tây', 35)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (436, CAST(N'2025-04-19T13:00:00.000' AS DateTime), 31, N'U ám, không nắng', N'may', 0.1, 79, 12, N'Tây', 37)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (437, CAST(N'2025-04-19T14:00:00.000' AS DateTime), 30, N'U ám, không nắng', N'may', 0.2, 79, 11, N'Tây Nam', 38)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (438, CAST(N'2025-04-19T15:00:00.000' AS DateTime), 30, N'Nhiều mây', N'may', 0.2, 80, 11, N'Tây Nam', 40)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (439, CAST(N'2025-04-19T16:00:00.000' AS DateTime), 29, N'Nhiều mây', N'may', 0.2, 82, 10, N'Tây Nam', 43)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (440, CAST(N'2025-04-19T17:00:00.000' AS DateTime), 29, N'Nhiều mây', N'may', 0.3, 83, 10, N'Nam', 47)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (441, CAST(N'2025-04-19T18:00:00.000' AS DateTime), 28, N'Mây đen', N'may', 0.3, 85, 9, N'Nam', 50)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (442, CAST(N'2025-04-19T19:00:00.000' AS DateTime), 28, N'Mây đen', N'may', 0.4, 87, 9, N'Nam', 53)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (443, CAST(N'2025-04-19T20:00:00.000' AS DateTime), 27, N'Mây đen', N'may', 0.4, 88, 8, N'Đông Nam', 57)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (444, CAST(N'2025-04-19T21:00:00.000' AS DateTime), 27, N'Khả năng có mưa', N'mua', 0.5, 90, 8, N'Đông Nam', 60)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (445, CAST(N'2025-04-19T22:00:00.000' AS DateTime), 27, N'Khả năng có mưa', N'mua', 0.6, 91, 8, N'Đông Nam', 63)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (446, CAST(N'2025-04-19T23:00:00.000' AS DateTime), 26, N'Khả năng có mưa', N'mua', 0.7, 92, 7, N'Đông', 67)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (447, CAST(N'2025-04-20T00:00:00.000' AS DateTime), 26, N'Mưa nhỏ', N'mua', 0.8, 93, 7, N'Đông', 70)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (448, CAST(N'2025-04-20T01:00:00.000' AS DateTime), 26, N'Mưa nhỏ', N'mua', 0.9, 94, 7, N'Đông', 72)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (449, CAST(N'2025-04-20T02:00:00.000' AS DateTime), 25, N'Mưa nhỏ', N'mua', 1.1, 94, 7, N'Đông Bắc', 73)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (450, CAST(N'2025-04-20T03:00:00.000' AS DateTime), 25, N'Mưa phùn', N'mua', 1.2, 95, 7, N'Đông Bắc', 75)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (451, CAST(N'2025-04-20T04:00:00.000' AS DateTime), 25, N'Mưa phùn', N'mua', 1.3, 95, 7, N'Đông Bắc', 77)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (452, CAST(N'2025-04-20T05:00:00.000' AS DateTime), 25, N'Mưa phùn', N'mua', 1.4, 94, 8, N'Bắc', 78)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (453, CAST(N'2025-04-20T06:00:00.000' AS DateTime), 25, N'Mưa', N'mua', 1.5, 94, 8, N'Bắc', 80)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (454, CAST(N'2025-04-20T07:00:00.000' AS DateTime), 25, N'Mưa', N'mua', 1.8, 93, 9, N'Bắc', 82)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (455, CAST(N'2025-04-20T08:00:00.000' AS DateTime), 26, N'Mưa', N'mua', 2.2, 93, 9, N'Tây Bắc', 83)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (456, CAST(N'2025-04-20T09:00:00.000' AS DateTime), 26, N'Mưa rào', N'mua', 2.5, 92, 10, N'Tây Bắc', 85)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (457, CAST(N'2025-04-20T10:00:00.000' AS DateTime), 26, N'Mưa rào', N'mua', 2.3, 91, 10, N'Tây Bắc', 83)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (458, CAST(N'2025-04-20T11:00:00.000' AS DateTime), 27, N'Mưa rào', N'mua', 2.2, 91, 11, N'Tây', 82)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (459, CAST(N'2025-04-20T12:00:00.000' AS DateTime), 27, N'Mưa không ngớt', N'mua', 2, 90, 11, N'Tây', 80)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (460, CAST(N'2025-04-20T13:00:00.000' AS DateTime), 27, N'Mưa không ngớt', N'mua', 1.8, 89, 11, N'Tây', 78)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (461, CAST(N'2025-04-20T14:00:00.000' AS DateTime), 28, N'Mưa không ngớt', N'mua', 1.7, 89, 10, N'Tây Nam', 77)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (462, CAST(N'2025-04-20T15:00:00.000' AS DateTime), 28, N'Vẫn mưa', N'mua', 1.5, 88, 10, N'Tây Nam', 75)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (463, CAST(N'2025-04-20T16:00:00.000' AS DateTime), 28, N'Vẫn mưa', N'mua', 1.3, 89, 10, N'Tây Nam', 73)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (464, CAST(N'2025-04-20T17:00:00.000' AS DateTime), 27, N'Vẫn mưa', N'mua', 1.2, 90, 9, N'Nam', 72)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (465, CAST(N'2025-04-20T18:00:00.000' AS DateTime), 27, N'Mưa rào nhẹ', N'mua', 1, 91, 9, N'Nam', 70)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (466, CAST(N'2025-04-20T19:00:00.000' AS DateTime), 27, N'Mưa rào nhẹ', N'mua', 0.9, 92, 9, N'Nam', 68)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (467, CAST(N'2025-04-20T20:00:00.000' AS DateTime), 26, N'Mưa rào nhẹ', N'mua', 0.7, 92, 8, N'Đông Nam', 67)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (468, CAST(N'2025-04-20T21:00:00.000' AS DateTime), 26, N'Mưa nhỏ', N'mua', 0.6, 93, 8, N'Đông Nam', 65)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (469, CAST(N'2025-04-20T22:00:00.000' AS DateTime), 26, N'Mưa nhỏ', N'mua', 0.5, 94, 8, N'Đông Nam', 57)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (470, CAST(N'2025-04-20T23:00:00.000' AS DateTime), 25, N'Mưa nhỏ', N'mua', 0.3, 94, 7, N'Đông', 48)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (471, CAST(N'2025-04-21T00:00:00.000' AS DateTime), 25, N'Tạnh mưa, nhiều mây', N'may', 0.2, 95, 7, N'Đông', 40)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (472, CAST(N'2025-04-21T01:00:00.000' AS DateTime), 25, N'Tạnh mưa, nhiều mây', N'may', 0.2, 95, 7, N'Đông', 38)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (473, CAST(N'2025-04-21T02:00:00.000' AS DateTime), 25, N'Tạnh mưa, nhiều mây', N'may', 0.1, 96, 6, N'Đông Bắc', 37)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (474, CAST(N'2025-04-21T03:00:00.000' AS DateTime), 25, N'Mây dày', N'may', 0.1, 96, 6, N'Đông Bắc', 35)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (475, CAST(N'2025-04-21T04:00:00.000' AS DateTime), 25, N'Mây dày', N'may', 0.1, 95, 6, N'Đông Bắc', 33)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (476, CAST(N'2025-04-21T05:00:00.000' AS DateTime), 25, N'Mây dày', N'may', 0, 93, 7, N'Bắc', 32)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (477, CAST(N'2025-04-21T06:00:00.000' AS DateTime), 25, N'Trời âm u', N'may', 0, 92, 7, N'Bắc', 30)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (478, CAST(N'2025-04-21T07:00:00.000' AS DateTime), 26, N'Trời âm u', N'may', 0, 90, 8, N'Bắc', 28)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (479, CAST(N'2025-04-21T08:00:00.000' AS DateTime), 26, N'Trời âm u', N'may', 0, 87, 8, N'Tây Bắc', 27)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (480, CAST(N'2025-04-21T09:00:00.000' AS DateTime), 27, N'Mây thay đổi', N'may', 0, 85, 9, N'Tây Bắc', 25)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (481, CAST(N'2025-04-21T10:00:00.000' AS DateTime), 28, N'Mây thay đổi', N'may', 0, 83, 10, N'Tây Bắc', 23)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (482, CAST(N'2025-04-21T11:00:00.000' AS DateTime), 29, N'Mây thay đổi', N'may', 0, 80, 10, N'Tây', 22)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (483, CAST(N'2025-04-21T12:00:00.000' AS DateTime), 30, N'Hửng sáng, có mây', N'may', 0, 78, 11, N'Tây', 20)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (484, CAST(N'2025-04-21T13:00:00.000' AS DateTime), 30, N'Hửng sáng, có mây', N'may', 0, 77, 11, N'Tây', 18)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (485, CAST(N'2025-04-21T14:00:00.000' AS DateTime), 31, N'Hửng sáng, có mây', N'may', 0, 75, 12, N'Tây Nam', 17)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (486, CAST(N'2025-04-21T15:00:00.000' AS DateTime), 31, N'Nắng yếu', N'nang', 0, 74, 12, N'Tây Nam', 15)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (487, CAST(N'2025-04-21T16:00:00.000' AS DateTime), 30, N'Nắng yếu', N'nang', 0, 76, 11, N'Tây Nam', 17)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (488, CAST(N'2025-04-21T17:00:00.000' AS DateTime), 29, N'Nắng yếu', N'nang', 0, 78, 10, N'Nam', 18)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (489, CAST(N'2025-04-21T18:00:00.000' AS DateTime), 28, N'Mây thưa', N'may', 0, 80, 9, N'Nam', 20)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (490, CAST(N'2025-04-21T19:00:00.000' AS DateTime), 28, N'Mây thưa', N'may', 0, 82, 8, N'Nam', 22)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (491, CAST(N'2025-04-21T20:00:00.000' AS DateTime), 27, N'Mây thưa', N'may', 0, 84, 8, N'Đông Nam', 23)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (492, CAST(N'2025-04-21T21:00:00.000' AS DateTime), 27, N'Có mây', N'may', 0, 86, 7, N'Đông Nam', 25)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (493, CAST(N'2025-04-21T22:00:00.000' AS DateTime), 27, N'Có mây', N'may', 0, 87, 7, N'Đông Nam', 17)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (494, CAST(N'2025-04-21T23:00:00.000' AS DateTime), 26, N'Có mây', N'may', 0, 88, 6, N'Đông', 13)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (495, CAST(N'2025-04-22T00:00:00.000' AS DateTime), 26, N'Ít mây', N'nang', 0, 89, 6, N'Đông', 10)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (496, CAST(N'2025-04-22T01:00:00.000' AS DateTime), 26, N'Ít mây', N'nang', 0, 90, 6, N'Đông', 8)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (497, CAST(N'2025-04-22T02:00:00.000' AS DateTime), 25, N'Ít mây', N'nang', 0, 90, 5, N'Đông Bắc', 7)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (498, CAST(N'2025-04-22T03:00:00.000' AS DateTime), 25, N'Trời quang', N'nang', 0, 91, 5, N'Đông Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (499, CAST(N'2025-04-22T04:00:00.000' AS DateTime), 25, N'Trời quang', N'nang', 0, 90, 5, N'Đông Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (500, CAST(N'2025-04-22T05:00:00.000' AS DateTime), 25, N'Trời quang', N'nang', 0, 88, 6, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (501, CAST(N'2025-04-22T06:00:00.000' AS DateTime), 26, N'Nắng sớm', N'nang', 0, 85, 7, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (502, CAST(N'2025-04-22T07:00:00.000' AS DateTime), 27, N'Nắng sớm', N'nang', 0, 80, 8, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (503, CAST(N'2025-04-22T08:00:00.000' AS DateTime), 28, N'Nắng sớm', N'nang', 0, 75, 9, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (504, CAST(N'2025-04-22T09:00:00.000' AS DateTime), 30, N'Nắng đẹp', N'nang', 0, 70, 10, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (505, CAST(N'2025-04-22T10:00:00.000' AS DateTime), 31, N'Nắng đẹp', N'nang', 0, 68, 11, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (506, CAST(N'2025-04-22T11:00:00.000' AS DateTime), 32, N'Nắng đẹp', N'nang', 0, 65, 12, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (507, CAST(N'2025-04-22T12:00:00.000' AS DateTime), 33, N'Nắng gắt', N'nang', 0, 62, 13, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (508, CAST(N'2025-04-22T13:00:00.000' AS DateTime), 33, N'Nắng gắt', N'nang', 0, 61, 13, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (509, CAST(N'2025-04-22T14:00:00.000' AS DateTime), 34, N'Nắng gắt', N'nang', 0, 60, 14, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (510, CAST(N'2025-04-22T15:00:00.000' AS DateTime), 34, N'Rất nóng', N'nang', 0, 60, 14, N'Bắc', 5)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (511, CAST(N'2025-04-22T16:00:00.000' AS DateTime), 33, N'Rất nóng', N'nang', 0, 63, 13, N'Bắc', 7)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (512, CAST(N'2025-04-22T17:00:00.000' AS DateTime), 32, N'Rất nóng', N'nang', 0, 68, 12, N'Bắc', 8)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (513, CAST(N'2025-04-22T18:00:00.000' AS DateTime), 31, N'Nắng chiều', N'nang', 0, 72, 11, N'Đông Nam', 10)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (514, CAST(N'2025-04-22T19:00:00.000' AS DateTime), 30, N'Nắng chiều', N'nang', 0, 75, 10, N'Đông Nam', 10)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (515, CAST(N'2025-04-22T20:00:00.000' AS DateTime), 29, N'Nắng chiều', N'nang', 0, 78, 9, N'Đông Nam', 10)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (516, CAST(N'2025-04-22T21:00:00.000' AS DateTime), 28, N'Ít mây', N'nang', 0, 82, 8, N'Đông Nam', 10)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (517, CAST(N'2025-04-22T22:00:00.000' AS DateTime), 28, N'Ít mây', N'nang', 0, 83, 8, N'Đông Nam', 13)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (518, CAST(N'2025-04-22T23:00:00.000' AS DateTime), 27, N'Ít mây', N'nang', 0, 85, 7, N'Đông', 17)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (519, CAST(N'2025-04-23T00:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0, 86, 7, N'Đông', 20)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (520, CAST(N'2025-04-23T01:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0, 87, 7, N'Đông', 23)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (521, CAST(N'2025-04-23T02:00:00.000' AS DateTime), 26, N'Nhiều mây', N'may', 0.1, 89, 6, N'Đông Bắc', 27)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (522, CAST(N'2025-04-23T03:00:00.000' AS DateTime), 26, N'U ám', N'may', 0.1, 90, 6, N'Đông Bắc', 30)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (523, CAST(N'2025-04-23T04:00:00.000' AS DateTime), 26, N'U ám', N'may', 0.1, 90, 6, N'Đông Bắc', 31)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (524, CAST(N'2025-04-23T05:00:00.000' AS DateTime), 26, N'U ám', N'may', 0.1, 89, 7, N'Bắc', 32)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (525, CAST(N'2025-04-23T06:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0.1, 88, 7, N'Bắc', 33)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (526, CAST(N'2025-04-23T07:00:00.000' AS DateTime), 27, N'Nhiều mây', N'may', 0.1, 87, 8, N'Bắc', 34)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (527, CAST(N'2025-04-23T08:00:00.000' AS DateTime), 28, N'Nhiều mây', N'may', 0.1, 85, 8, N'Bắc', 35)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (528, CAST(N'2025-04-23T09:00:00.000' AS DateTime), 29, N'Có mây', N'may', 0.1, 83, 9, N'Bắc', 36)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (529, CAST(N'2025-04-23T10:00:00.000' AS DateTime), 30, N'Có mây', N'may', 0.1, 80, 9, N'Bắc', 37)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (530, CAST(N'2025-04-23T11:00:00.000' AS DateTime), 30, N'Có mây', N'may', 0.1, 78, 10, N'Bắc', 38)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (531, CAST(N'2025-04-23T12:00:00.000' AS DateTime), 31, N'Hửng nắng', N'nang', 0.1, 75, 10, N'Bắc', 39)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (532, CAST(N'2025-04-23T13:00:00.000' AS DateTime), 31, N'Hửng nắng', N'nang', 0.1, 76, 10, N'Đông Bắc', 40)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (533, CAST(N'2025-04-23T14:00:00.000' AS DateTime), 32, N'Hửng nắng', N'nang', 0.2, 77, 11, N'Đông Bắc', 41)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (534, CAST(N'2025-04-23T15:00:00.000' AS DateTime), 32, N'Nắng yếu', N'nang', 0.2, 79, 11, N'Đông Bắc', 42)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (535, CAST(N'2025-04-23T16:00:00.000' AS DateTime), 31, N'Nắng yếu', N'nang', 0.2, 81, 10, N'Đông Nam', 43)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (536, CAST(N'2025-04-23T17:00:00.000' AS DateTime), 30, N'Nắng yếu', N'nang', 0.3, 83, 9, N'Đông Nam', 44)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (537, CAST(N'2025-04-23T18:00:00.000' AS DateTime), 29, N'Mây thay đổi', N'may', 0.3, 85, 9, N'Đông Nam', 45)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (538, CAST(N'2025-04-23T19:00:00.000' AS DateTime), 28, N'Mây thay đổi', N'may', 0.3, 86, 8, N'Đông Nam', 45)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (539, CAST(N'2025-04-23T20:00:00.000' AS DateTime), 28, N'Mây thay đổi', N'may', 0.4, 87, 8, N'Đông Nam', 45)
+GO
+INSERT [dbo].[DuBaoThoiTiet] ([ID], [NgayGio], [NhietDo], [TrangThai], [IconKey], [LuongMua], [DoAm], [TocDoGio], [HuongGio], [XacSuatMua]) VALUES (540, CAST(N'2025-04-23T21:00:00.000' AS DateTime), 27, N'Khả năng mưa', N'mua', 0.4, 88, 8, N'Đông Nam', 45)
+GO
+SET IDENTITY_INSERT [dbo].[DuBaoThoiTiet] OFF
+GO
+INSERT [dbo].[QLChuRuong] ([CR_IDChuRuong], [CR_HoTen], [CR_NgaySinh], [CR_GioiTinh], [CR_DiaChi], [CR_CMND], [CR_TenTaiKhoan]) VALUES (N'CR01', N'Nguyễn Văn An', CAST(N'1985-05-10' AS Date), N'Nam', N'Thôn Đông, Xã Nghĩa An, Huyện Nghĩa Hành, Quảng Ngãi', N'123456789012', N'nguyenvana')
+GO
+INSERT [dbo].[QLChuRuong] ([CR_IDChuRuong], [CR_HoTen], [CR_NgaySinh], [CR_GioiTinh], [CR_DiaChi], [CR_CMND], [CR_TenTaiKhoan]) VALUES (N'CR02', N'Trần Thị Bình', CAST(N'1992-12-25' AS Date), N'Nữ', N'Ấp Tây, Xã Bình Dương, Huyện Thăng Bình, Quảng Nam', N'098765432109', N'tranthib')
+GO
+INSERT [dbo].[QLChuRuong] ([CR_IDChuRuong], [CR_HoTen], [CR_NgaySinh], [CR_GioiTinh], [CR_DiaChi], [CR_CMND], [CR_TenTaiKhoan]) VALUES (N'CR03', N'Lê Văn Cường', CAST(N'1979-08-03' AS Date), N'Nam', N'Tổ 3, Phường Hòa Thọ Đông, Quận Cẩm Lệ, Đà Nẵng', N'111222333444', N'levancuong')
+GO
+INSERT [dbo].[QLChuRuong] ([CR_IDChuRuong], [CR_HoTen], [CR_NgaySinh], [CR_GioiTinh], [CR_DiaChi], [CR_CMND], [CR_TenTaiKhoan]) VALUES (N'CR04', N'Phạm Thị Dung', CAST(N'1995-02-14' AS Date), N'Nữ', N'Xã Hành Minh, Huyện Nghĩa Hành, Quảng Ngãi', N'222333444555', N'phamthidung')
+GO
+INSERT [dbo].[QLChuRuong] ([CR_IDChuRuong], [CR_HoTen], [CR_NgaySinh], [CR_GioiTinh], [CR_DiaChi], [CR_CMND], [CR_TenTaiKhoan]) VALUES (N'CR05', N'Mai Đình Công', CAST(N'2005-07-26' AS Date), N'Nam', N'KTX DMC, Hòa Khánh Nam, Liên Chiểu, Đà Nẵng', N'555666777888', N'maidinhcong')
+GO
+INSERT [dbo].[QLChuRuong] ([CR_IDChuRuong], [CR_HoTen], [CR_NgaySinh], [CR_GioiTinh], [CR_DiaChi], [CR_CMND], [CR_TenTaiKhoan]) VALUES (N'CR06', N'caoke', NULL, NULL, NULL, NULL, N'caoke')
+GO
+INSERT [dbo].[QLChuRuong] ([CR_IDChuRuong], [CR_HoTen], [CR_NgaySinh], [CR_GioiTinh], [CR_DiaChi], [CR_CMND], [CR_TenTaiKhoan]) VALUES (N'CR07', N'chung123', NULL, NULL, NULL, NULL, N'chung123')
+GO
+INSERT [dbo].[QLChuRuong] ([CR_IDChuRuong], [CR_HoTen], [CR_NgaySinh], [CR_GioiTinh], [CR_DiaChi], [CR_CMND], [CR_TenTaiKhoan]) VALUES (N'CR08', N'Binh', CAST(N'2005-04-11' AS Date), N'Nữ', N'Vinh', N'12525525852', N'binhbanbanh')
+GO
+INSERT [dbo].[QLHatGiong] ([QLHG_IDHatGiong], [QLHG_TenHatGiong], [QLHG_GiaHatGiong], [QLHG_SoLuongTonKho], [QLHG_DonViTinh], [QLHG_NhaCungCap]) VALUES (N'HG01', N'Lúa OM5451', CAST(15.000 AS Decimal(12, 3)), 500, N'kg', N'Công ty Giống Cây Trồng Miền Nam')
+GO
+INSERT [dbo].[QLHatGiong] ([QLHG_IDHatGiong], [QLHG_TenHatGiong], [QLHG_GiaHatGiong], [QLHG_SoLuongTonKho], [QLHG_DonViTinh], [QLHG_NhaCungCap]) VALUES (N'HG02', N'Lúa Đài Thơm 8', CAST(165.000 AS Decimal(12, 3)), 300, N'kg', N'Viện Lúa Đồng Bằng Sông Cửu Long')
+GO
+INSERT [dbo].[QLHatGiong] ([QLHG_IDHatGiong], [QLHG_TenHatGiong], [QLHG_GiaHatGiong], [QLHG_SoLuongTonKho], [QLHG_DonViTinh], [QLHG_NhaCungCap]) VALUES (N'HG03', N'Ngô lai NK7328', CAST(95.000 AS Decimal(12, 3)), 150, N'kg', N'Syngenta Việt Nam')
+GO
+INSERT [dbo].[QLHatGiong] ([QLHG_IDHatGiong], [QLHG_TenHatGiong], [QLHG_GiaHatGiong], [QLHG_SoLuongTonKho], [QLHG_DonViTinh], [QLHG_NhaCungCap]) VALUES (N'HG04', N'Đậu xanh ĐX208', CAST(45.000 AS Decimal(12, 3)), 200, N'kg', N'Trung tâm Giống Nông nghiệp Tỉnh')
+GO
+INSERT [dbo].[QLHatGiong] ([QLHG_IDHatGiong], [QLHG_TenHatGiong], [QLHG_GiaHatGiong], [QLHG_SoLuongTonKho], [QLHG_DonViTinh], [QLHG_NhaCungCap]) VALUES (N'HG05', N'Hạt rau muống', CAST(70.000 AS Decimal(12, 3)), 50, N'kg', N'Công ty Hạt Giống Rạng Đông')
+GO
+INSERT [dbo].[QLMuaVu] ([MV_IDMuaVu], [MV_TenMuaVu], [MV_ThoiGianGieo], [MV_ThoiGianThuHoachDuKien], [MV_ThoiGianThuHoachThucTe], [R_IDRuong], [MV_TenCayTrong], [MV_TrangThai], [MV_SanLuongDuKien], [MV_SanLuongThucTe], [MV_DonViSanLuong]) VALUES (N'MV01', N'Đông Xuân 2024-2025 Ruộng 1', CAST(N'2024-11-20' AS Date), CAST(N'2025-03-30' AS Date), NULL, N'R001', N'Lúa OM5451', N'Đang trồng', CAST(9.00 AS Decimal(10, 2)), NULL, N'tấn')
+GO
+INSERT [dbo].[QLMuaVu] ([MV_IDMuaVu], [MV_TenMuaVu], [MV_ThoiGianGieo], [MV_ThoiGianThuHoachDuKien], [MV_ThoiGianThuHoachThucTe], [R_IDRuong], [MV_TenCayTrong], [MV_TrangThai], [MV_SanLuongDuKien], [MV_SanLuongThucTe], [MV_DonViSanLuong]) VALUES (N'MV02', N'Hè Thu 2025 Ruộng 3', CAST(N'2025-04-15' AS Date), CAST(N'2025-08-10' AS Date), NULL, N'R003', N'Lúa Đài Thơm 8', N'Đang trồng', CAST(13.00 AS Decimal(10, 2)), NULL, N'tấn')
+GO
+INSERT [dbo].[QLMuaVu] ([MV_IDMuaVu], [MV_TenMuaVu], [MV_ThoiGianGieo], [MV_ThoiGianThuHoachDuKien], [MV_ThoiGianThuHoachThucTe], [R_IDRuong], [MV_TenCayTrong], [MV_TrangThai], [MV_SanLuongDuKien], [MV_SanLuongThucTe], [MV_DonViSanLuong]) VALUES (N'MV03', N'Vụ Ngô 2025 Ruộng 5', CAST(N'2025-02-10' AS Date), CAST(N'2025-06-05' AS Date), NULL, N'R005', N'Ngô lai NK7328', N'Đang trồng', CAST(20.00 AS Decimal(10, 2)), NULL, N'tấn')
+GO
+INSERT [dbo].[QLMuaVu] ([MV_IDMuaVu], [MV_TenMuaVu], [MV_ThoiGianGieo], [MV_ThoiGianThuHoachDuKien], [MV_ThoiGianThuHoachThucTe], [R_IDRuong], [MV_TenCayTrong], [MV_TrangThai], [MV_SanLuongDuKien], [MV_SanLuongThucTe], [MV_DonViSanLuong]) VALUES (N'MV04', N'Vụ Đậu Xanh 2025 Ruộng 2', CAST(N'2025-05-01' AS Date), CAST(N'2025-07-20' AS Date), NULL, N'R002', N'Đậu xanh ĐX208', N'Kế hoạch', CAST(1.50 AS Decimal(10, 2)), NULL, N'tấn')
+GO
+INSERT [dbo].[QLMuaVu] ([MV_IDMuaVu], [MV_TenMuaVu], [MV_ThoiGianGieo], [MV_ThoiGianThuHoachDuKien], [MV_ThoiGianThuHoachThucTe], [R_IDRuong], [MV_TenCayTrong], [MV_TrangThai], [MV_SanLuongDuKien], [MV_SanLuongThucTe], [MV_DonViSanLuong]) VALUES (N'MV05', N'Đông Xuân 2023-2024 Ruộng 4', CAST(N'2023-11-15' AS Date), CAST(N'2024-03-25' AS Date), CAST(N'2024-03-28' AS Date), N'R004', N'Lúa OM5451', N'Đã thu hoạch', CAST(7.50 AS Decimal(10, 2)), CAST(7.20 AS Decimal(10, 2)), N'tấn')
+GO
+INSERT [dbo].[QLMuaVu] ([MV_IDMuaVu], [MV_TenMuaVu], [MV_ThoiGianGieo], [MV_ThoiGianThuHoachDuKien], [MV_ThoiGianThuHoachThucTe], [R_IDRuong], [MV_TenCayTrong], [MV_TrangThai], [MV_SanLuongDuKien], [MV_SanLuongThucTe], [MV_DonViSanLuong]) VALUES (N'MV06', N'Vụ Rau Muống 2025 Ruộng 6', CAST(N'2025-03-01' AS Date), CAST(N'2025-04-15' AS Date), NULL, N'R006', N'Rau muống', N'Đang trồng', CAST(0.50 AS Decimal(10, 2)), NULL, N'tấn')
+GO
+INSERT [dbo].[QLNhanCong] ([QLNC_IDNhanCong], [QLNC_TenNhanCong], [QLNC_SoDienThoai], [QLNC_CMND], [QLNC_DiaChi], [QLNC_NgaySinh], [QLNC_NgayVaoLam], [QLNC_Luong], [QLNC_DonViLuong], [QLNC_TrangThai]) VALUES (N'NC01', N'Trần Văn Hùng', N'0905111222', N'111111111001', N'Thôn Đông, Xã Nghĩa An', CAST(N'1990-03-15' AS Date), CAST(N'2024-01-10' AS Date), CAST(250.000 AS Decimal(12, 3)), N'Ngày', N'Đang làm việc')
+GO
+INSERT [dbo].[QLNhanCong] ([QLNC_IDNhanCong], [QLNC_TenNhanCong], [QLNC_SoDienThoai], [QLNC_CMND], [QLNC_DiaChi], [QLNC_NgaySinh], [QLNC_NgayVaoLam], [QLNC_Luong], [QLNC_DonViLuong], [QLNC_TrangThai]) VALUES (N'NC02', N'Nguyễn Thị Lan', N'0913333444', N'111111111002', N'Ấp Tây, Xã Bình Dương', CAST(N'1988-07-20' AS Date), CAST(N'2024-02-01' AS Date), CAST(230.000 AS Decimal(12, 3)), N'Ngày', N'Đang làm việc')
+GO
+INSERT [dbo].[QLNhanCong] ([QLNC_IDNhanCong], [QLNC_TenNhanCong], [QLNC_SoDienThoai], [QLNC_CMND], [QLNC_DiaChi], [QLNC_NgaySinh], [QLNC_NgayVaoLam], [QLNC_Luong], [QLNC_DonViLuong], [QLNC_TrangThai]) VALUES (N'NC03', N'Lê Minh Tuấn', N'0987654321', N'111111111003', N'Tổ 3, Phường Hòa Thọ Đông', CAST(N'1998-11-05' AS Date), CAST(N'2024-05-15' AS Date), CAST(6000.000 AS Decimal(12, 3)), N'Tháng', N'Đang làm việc')
+GO
+INSERT [dbo].[QLNhanCong] ([QLNC_IDNhanCong], [QLNC_TenNhanCong], [QLNC_SoDienThoai], [QLNC_CMND], [QLNC_DiaChi], [QLNC_NgaySinh], [QLNC_NgayVaoLam], [QLNC_Luong], [QLNC_DonViLuong], [QLNC_TrangThai]) VALUES (N'NC04', N'Hoàng Văn Dũng', N'0333123123', N'111111111004', N'Xã Hành Minh, Huyện Nghĩa Hành', CAST(N'1985-01-25' AS Date), CAST(N'2023-10-01' AS Date), CAST(260.000 AS Decimal(12, 3)), N'Ngày', N'Đã nghỉ')
+GO
+INSERT [dbo].[QLPhanBon] ([QLPB_IDPhanBon], [QLPB_TenPhanBon], [QLPB_SoLuongTonKho], [QLPB_DonViTinh], [QLPB_Gia], [QLPB_LoaiPhanBon], [QLPB_NhaCungCap]) VALUES (N'PB01', N'Urê Phú Mỹ', 1000, N'kg', CAST(12000.00 AS Decimal(12, 2)), N'Đạm', N'PVFCCo')
+GO
+INSERT [dbo].[QLPhanBon] ([QLPB_IDPhanBon], [QLPB_TenPhanBon], [QLPB_SoLuongTonKho], [QLPB_DonViTinh], [QLPB_Gia], [QLPB_LoaiPhanBon], [QLPB_NhaCungCap]) VALUES (N'PB02', N'Super Lân Long Thành', 800, N'kg', CAST(5500.00 AS Decimal(12, 2)), N'Lân', N'Công ty Phân bón Long Thành')
+GO
+INSERT [dbo].[QLPhanBon] ([QLPB_IDPhanBon], [QLPB_TenPhanBon], [QLPB_SoLuongTonKho], [QLPB_DonViTinh], [QLPB_Gia], [QLPB_LoaiPhanBon], [QLPB_NhaCungCap]) VALUES (N'PB03', N'NPK Đầu Trâu 16-16-8', 1500, N'kg', CAST(14500.00 AS Decimal(12, 2)), N'NPK', N'Bình Điền')
+GO
+INSERT [dbo].[QLPhanBon] ([QLPB_IDPhanBon], [QLPB_TenPhanBon], [QLPB_SoLuongTonKho], [QLPB_DonViTinh], [QLPB_Gia], [QLPB_LoaiPhanBon], [QLPB_NhaCungCap]) VALUES (N'PB04', N'Phân hữu cơ Sông Gianh', 500, N'bao (40kg)', CAST(150000.00 AS Decimal(12, 2)), N'Hữu cơ', N'Tổng Công ty Sông Gianh')
+GO
+INSERT [dbo].[QLPhanBon] ([QLPB_IDPhanBon], [QLPB_TenPhanBon], [QLPB_SoLuongTonKho], [QLPB_DonViTinh], [QLPB_Gia], [QLPB_LoaiPhanBon], [QLPB_NhaCungCap]) VALUES (N'PB05', N'Kali Clorua (Israel)', 300, N'kg', CAST(18000.00 AS Decimal(12, 2)), N'Kali', N'Nhập khẩu')
+GO
+INSERT [dbo].[QLRuong] ([R_IDRuong], [CR_IDChuRuong], [R_DienTich], [R_ViTri], [R_LoaiDat]) VALUES (N'R001', N'CR01', CAST(1.500 AS Decimal(10, 3)), N'Cánh đồng phía Bắc thôn Đông', N'Đất thịt nhẹ')
+GO
+INSERT [dbo].[QLRuong] ([R_IDRuong], [CR_IDChuRuong], [R_DienTich], [R_ViTri], [R_LoaiDat]) VALUES (N'R002', N'CR01', CAST(0.800 AS Decimal(10, 3)), N'Gần bờ sông thôn Đông', N'Đất phù sa')
+GO
+INSERT [dbo].[QLRuong] ([R_IDRuong], [CR_IDChuRuong], [R_DienTich], [R_ViTri], [R_LoaiDat]) VALUES (N'R003', N'CR02', CAST(2.100 AS Decimal(10, 3)), N'Khu vực Gò Cao, ấp Tây', N'Đất xám bạc màu')
+GO
+INSERT [dbo].[QLRuong] ([R_IDRuong], [CR_IDChuRuong], [R_DienTich], [R_ViTri], [R_LoaiDat]) VALUES (N'R004', N'CR03', CAST(1.200 AS Decimal(10, 3)), N'Tổ 3, gần khu công nghiệp Hòa Thọ', N'Đất cát pha')
+GO
+INSERT [dbo].[QLRuong] ([R_IDRuong], [CR_IDChuRuong], [R_DienTich], [R_ViTri], [R_LoaiDat]) VALUES (N'R005', N'CR04', CAST(3.000 AS Decimal(10, 3)), N'Xã Hành Minh, khu vực đồng bằng', N'Đất thịt')
+GO
+INSERT [dbo].[QLRuong] ([R_IDRuong], [CR_IDChuRuong], [R_DienTich], [R_ViTri], [R_LoaiDat]) VALUES (N'R006', N'CR05', CAST(0.500 AS Decimal(10, 3)), N'Vườn thực nghiệm KTX DMC', N'Đất thịt pha cát')
+GO
+INSERT [dbo].[QLVatTu] ([QLVT_IDVatTu], [QLVT_TenVatTu], [QLVT_GiaVatTu], [QLVT_SoLuongTonKho], [QLVT_DonVi], [QLVT_LoaiVatTu], [QLVT_NhaCungCap]) VALUES (N'VT01', N'Thuốc trừ sâu Regent 800WG', CAST(25.000 AS Decimal(12, 3)), 200, N'Gói (1.6g)', N'Thuốc BVTV', N'Bayer Việt Nam')
+GO
+INSERT [dbo].[QLVatTu] ([QLVT_IDVatTu], [QLVT_TenVatTu], [QLVT_GiaVatTu], [QLVT_SoLuongTonKho], [QLVT_DonVi], [QLVT_LoaiVatTu], [QLVT_NhaCungCap]) VALUES (N'VT02', N'Thuốc trừ cỏ Gramoxone 20SL', CAST(120.000 AS Decimal(12, 3)), 50, N'Chai (1L)', N'Thuốc BVTV', N'Syngenta Việt Nam')
+GO
+INSERT [dbo].[QLVatTu] ([QLVT_IDVatTu], [QLVT_TenVatTu], [QLVT_GiaVatTu], [QLVT_SoLuongTonKho], [QLVT_DonVi], [QLVT_LoaiVatTu], [QLVT_NhaCungCap]) VALUES (N'VT03', N'Bạt phủ nông nghiệp', CAST(8.000 AS Decimal(12, 3)), 1000, N'm2', N'Vật tư khác', N'Công ty Nhựa ABC')
+GO
+INSERT [dbo].[QLVatTu] ([QLVT_IDVatTu], [QLVT_TenVatTu], [QLVT_GiaVatTu], [QLVT_SoLuongTonKho], [QLVT_DonVi], [QLVT_LoaiVatTu], [QLVT_NhaCungCap]) VALUES (N'VT04', N'Bình phun thuốc 16L', CAST(450.000 AS Decimal(12, 3)), 10, N'Cái', N'Công cụ', N'Cửa hàng Vật tư NN XYZ')
+GO
+INSERT [dbo].[QLVatTu] ([QLVT_IDVatTu], [QLVT_TenVatTu], [QLVT_GiaVatTu], [QLVT_SoLuongTonKho], [QLVT_DonVi], [QLVT_LoaiVatTu], [QLVT_NhaCungCap]) VALUES (N'VT05', N'Cuốc làm vườn', CAST(75.000 AS Decimal(12, 3)), 30, N'Cái', N'Công cụ', N'Làng nghề rèn')
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'admin', N'123123', N'admin@farm.com', NULL)
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'binhbanbanh', N'zxczxc', N'binh@gmail.com', N'CR08')
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'caoke', N'123123', N'cao@gmail.com', N'CR06')
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'chinhs', N'123123', N'chinh@gmail.com', NULL)
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'chung123', N'asdasd', N'chung@gmail.com', N'CR07')
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'levancuong', N'vancuong', N'levancuong@gmail.com', N'CR03')
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'maidinhcong', N'congdm', N'maidinhcong@gmail.com', N'CR05')
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'nguyenvana', N'vana', N'nguyenvana@gmail.com', N'CR01')
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'phamthidung', N'thidung', N'phamthidung@gmail.com', N'CR04')
+GO
+INSERT [dbo].[TaiKhoan] ([TK_TenTaiKhoan], [TK_MatKhau], [TK_Email], [CR_IDChuRuong]) VALUES (N'tranthib', N'qwerty', N'tranthib@gmail.com', N'CR02')
+GO
+/****** Object:  Index [IX_DuBaoThoiTiet_NgayGio]    Script Date: 23/04/2025 1:54:23 CH ******/
+CREATE NONCLUSTERED INDEX [IX_DuBaoThoiTiet_NgayGio] ON [dbo].[DuBaoThoiTiet]
+(
+	[NgayGio] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__QLChuRuo__77DFED66BB77FE12]    Script Date: 23/04/2025 1:54:23 CH ******/
+ALTER TABLE [dbo].[QLChuRuong] ADD UNIQUE NONCLUSTERED 
+(
+	[CR_TenTaiKhoan] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ_QLChuRuong_CR_CMND_NotNull]    Script Date: 23/04/2025 1:54:23 CH ******/
+CREATE UNIQUE NONCLUSTERED INDEX [UQ_QLChuRuong_CR_CMND_NotNull] ON [dbo].[QLChuRuong]
+(
+	[CR_CMND] ASC
+)
+WHERE ([CR_CMND] IS NOT NULL)
+WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__QLNhanCo__57C8D957BEAF8F26]    Script Date: 23/04/2025 1:54:23 CH ******/
+ALTER TABLE [dbo].[QLNhanCong] ADD  CONSTRAINT [UQ__QLNhanCo__57C8D957BEAF8F26] UNIQUE NONCLUSTERED 
+(
+	[QLNC_CMND] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+SET ANSI_PADDING ON
+GO
+/****** Object:  Index [UQ__TaiKhoan__3D1BF6F5A85F4202]    Script Date: 23/04/2025 1:54:23 CH ******/
+ALTER TABLE [dbo].[TaiKhoan] ADD UNIQUE NONCLUSTERED 
+(
+	[TK_Email] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[DuBaoThoiTiet] ADD  CONSTRAINT [DF_DuBaoThoiTiet_LuongMua]  DEFAULT ((0)) FOR [LuongMua]
+GO
+ALTER TABLE [dbo].[DuBaoThoiTiet] ADD  CONSTRAINT [DF_DuBaoThoiTiet_DoAm]  DEFAULT ((0)) FOR [DoAm]
+GO
+ALTER TABLE [dbo].[DuBaoThoiTiet] ADD  CONSTRAINT [DF_DuBaoThoiTiet_TocDoGio]  DEFAULT ((0)) FOR [TocDoGio]
+GO
+ALTER TABLE [dbo].[DuBaoThoiTiet] ADD  CONSTRAINT [DF_DuBaoThoiTiet_XacSuatMua]  DEFAULT ((0)) FOR [XacSuatMua]
+GO
+ALTER TABLE [dbo].[QLHatGiong] ADD  CONSTRAINT [DF__QLHatGion__QLHG___4316F928]  DEFAULT ((0)) FOR [QLHG_SoLuongTonKho]
+GO
+ALTER TABLE [dbo].[QLPhanBon] ADD  DEFAULT ((0)) FOR [QLPB_SoLuongTonKho]
+GO
+ALTER TABLE [dbo].[QLVatTu] ADD  CONSTRAINT [DF__QLVatTu__QLVT_So__48CFD27E]  DEFAULT ((0)) FOR [QLVT_SoLuongTonKho]
+GO
+ALTER TABLE [dbo].[ChiPhi]  WITH CHECK ADD  CONSTRAINT [FK_ChiPhi_QLHatGiong] FOREIGN KEY([QLHG_IDHatGiong])
+REFERENCES [dbo].[QLHatGiong] ([QLHG_IDHatGiong])
+ON DELETE SET NULL
+GO
+ALTER TABLE [dbo].[ChiPhi] CHECK CONSTRAINT [FK_ChiPhi_QLHatGiong]
+GO
+ALTER TABLE [dbo].[ChiPhi]  WITH CHECK ADD  CONSTRAINT [FK_ChiPhi_QLMuaVu] FOREIGN KEY([MV_IDMuaVu])
+REFERENCES [dbo].[QLMuaVu] ([MV_IDMuaVu])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[ChiPhi] CHECK CONSTRAINT [FK_ChiPhi_QLMuaVu]
+GO
+ALTER TABLE [dbo].[ChiPhi]  WITH CHECK ADD  CONSTRAINT [FK_ChiPhi_QLNhanCong] FOREIGN KEY([QLNC_IDNhanCong])
+REFERENCES [dbo].[QLNhanCong] ([QLNC_IDNhanCong])
+ON DELETE SET NULL
+GO
+ALTER TABLE [dbo].[ChiPhi] CHECK CONSTRAINT [FK_ChiPhi_QLNhanCong]
+GO
+ALTER TABLE [dbo].[ChiPhi]  WITH CHECK ADD  CONSTRAINT [FK_ChiPhi_QLPhanBon] FOREIGN KEY([QLPB_IDPhanBon])
+REFERENCES [dbo].[QLPhanBon] ([QLPB_IDPhanBon])
+ON DELETE SET NULL
+GO
+ALTER TABLE [dbo].[ChiPhi] CHECK CONSTRAINT [FK_ChiPhi_QLPhanBon]
+GO
+ALTER TABLE [dbo].[ChiPhi]  WITH CHECK ADD  CONSTRAINT [FK_ChiPhi_QLVatTu] FOREIGN KEY([QLVT_IDVatTu])
+REFERENCES [dbo].[QLVatTu] ([QLVT_IDVatTu])
+ON DELETE SET NULL
+GO
+ALTER TABLE [dbo].[ChiPhi] CHECK CONSTRAINT [FK_ChiPhi_QLVatTu]
+GO
+ALTER TABLE [dbo].[QLChuRuong]  WITH CHECK ADD  CONSTRAINT [FK_QLChuRuong_TaiKhoan] FOREIGN KEY([CR_TenTaiKhoan])
+REFERENCES [dbo].[TaiKhoan] ([TK_TenTaiKhoan])
+GO
+ALTER TABLE [dbo].[QLChuRuong] CHECK CONSTRAINT [FK_QLChuRuong_TaiKhoan]
+GO
+ALTER TABLE [dbo].[QLMuaVu]  WITH CHECK ADD  CONSTRAINT [FK_QLMuaVu_QLRuong] FOREIGN KEY([R_IDRuong])
+REFERENCES [dbo].[QLRuong] ([R_IDRuong])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[QLMuaVu] CHECK CONSTRAINT [FK_QLMuaVu_QLRuong]
+GO
+ALTER TABLE [dbo].[QLRuong]  WITH CHECK ADD  CONSTRAINT [FK_QLRuong_QLChuRuong] FOREIGN KEY([CR_IDChuRuong])
+REFERENCES [dbo].[QLChuRuong] ([CR_IDChuRuong])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[QLRuong] CHECK CONSTRAINT [FK_QLRuong_QLChuRuong]
+GO
+ALTER TABLE [dbo].[TaiKhoan]  WITH CHECK ADD  CONSTRAINT [FK_TaiKhoan_QLChuRuong] FOREIGN KEY([CR_IDChuRuong])
+REFERENCES [dbo].[QLChuRuong] ([CR_IDChuRuong])
+ON UPDATE CASCADE
+ON DELETE SET NULL
+GO
+ALTER TABLE [dbo].[TaiKhoan] CHECK CONSTRAINT [FK_TaiKhoan_QLChuRuong]
+GO
+USE [master]
+GO
+ALTER DATABASE [QuanLyNongTrai] SET  READ_WRITE 
+GO
